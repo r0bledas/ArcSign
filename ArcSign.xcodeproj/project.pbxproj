@@ -40,6 +40,7 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Backend/Mac/KeychainShim/MacKeychainShim.m,
+				Backend/Mac/WindowShim/MacWindowShim.m,
 				Resources/ellekit.deb,
 				Resources/Info.plist,
 			);
@@ -263,14 +264,16 @@
 			);
 			inputPaths = (
 				"$(PROJECT_DIR)/Ksign/Backend/Mac/KeychainShim/MacKeychainShim.m",
+				"$(PROJECT_DIR)/Ksign/Backend/Mac/WindowShim/MacWindowShim.m",
 			);
 			name = "Build MacKeychainShim.dylib";
 			outputPaths = (
 				"$(BUILT_PRODUCTS_DIR)/$(UNLOCALIZED_RESOURCES_FOLDER_PATH)/MacKeychainShim.dylib",
+				"$(BUILT_PRODUCTS_DIR)/$(UNLOCALIZED_RESOURCES_FOLDER_PATH)/MacWindowShim.dylib",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "set -e\nRES_DIR=\"${BUILT_PRODUCTS_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}\"\nmkdir -p \"${RES_DIR}\"\ncp \"${PROJECT_DIR}/Ksign/Resources/ellekit.deb\" \"${RES_DIR}/ellekit.deb\" 2>/dev/null || true\nSDK_PATH=$(xcrun --sdk macosx --show-sdk-path)\nxcrun clang -dynamiclib -fobjc-arc \\\n  -target arm64-apple-ios14.0-macabi \\\n  -isysroot \"${SDK_PATH}\" \\\n  -F/System/iOSSupport/System/Library/Frameworks \\\n  -framework Foundation -framework Security \\\n  -install_name \"@executable_path/Frameworks/MacKeychainShim.dylib\" \\\n  \"${PROJECT_DIR}/Ksign/Backend/Mac/KeychainShim/MacKeychainShim.m\" \\\n  -o \"${RES_DIR}/MacKeychainShim.dylib\"\ncodesign --force --sign - --timestamp=none \"${RES_DIR}/MacKeychainShim.dylib\"\n";
+			shellScript = "set -e\nRES_DIR=\"${BUILT_PRODUCTS_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}\"\nmkdir -p \"${RES_DIR}\"\ncp \"${PROJECT_DIR}/Ksign/Resources/ellekit.deb\" \"${RES_DIR}/ellekit.deb\" 2>/dev/null || true\nSDK_PATH=$(xcrun --sdk macosx --show-sdk-path)\nxcrun clang -dynamiclib -fobjc-arc \\\n  -target arm64-apple-ios14.0-macabi \\\n  -isysroot \"${SDK_PATH}\" \\\n  -F/System/iOSSupport/System/Library/Frameworks \\\n  -framework Foundation -framework Security \\\n  -install_name \"@executable_path/Frameworks/MacKeychainShim.dylib\" \\\n  \"${PROJECT_DIR}/Ksign/Backend/Mac/KeychainShim/MacKeychainShim.m\" \\\n  -o \"${RES_DIR}/MacKeychainShim.dylib\"\ncodesign --force --sign - --timestamp=none \"${RES_DIR}/MacKeychainShim.dylib\"\nxcrun clang -dynamiclib -fobjc-arc \\\n  -target arm64-apple-ios14.0-macabi \\\n  -isysroot \"${SDK_PATH}\" \\\n  -framework Foundation -framework CoreGraphics \\\n  -install_name \"@executable_path/Frameworks/MacWindowShim.dylib\" \\\n  \"${PROJECT_DIR}/Ksign/Backend/Mac/WindowShim/MacWindowShim.m\" \\\n  -o \"${RES_DIR}/MacWindowShim.dylib\"\ncodesign --force --sign - --timestamp=none \"${RES_DIR}/MacWindowShim.dylib\"\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 

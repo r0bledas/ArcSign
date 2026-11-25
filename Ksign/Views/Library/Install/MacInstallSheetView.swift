@@ -25,6 +25,9 @@ struct MacInstallSheetView: View {
 
 	@State private var selectedMethod: MacInstallMethodKind = .certlessCatalyst
 	@State private var injectKeychainShim: Bool = true
+	@State private var windowMode: MacWindowMode = .iphone
+	@State private var windowScale: MacWindowScale = .x1_0
+	@AppStorage("arcsign.autoCleanAfterInstall") private var autoCleanAfterInstall: Bool = true
 	@State private var destination: MacInstallDestination = .systemApplications
 	@State private var selectedCertIndex: Int = UserDefaults.standard.integer(forKey: "feather.selectedCert")
 	@State private var xcodeIdentities: [LocalXcodeSigningIdentity] = []
@@ -91,7 +94,7 @@ struct MacInstallSheetView: View {
 			Divider()
 			footerBar
 		}
-		.frame(minWidth: 640, idealWidth: 680, minHeight: 560, idealHeight: 640)
+		.frame(minWidth: 680, idealWidth: 720, minHeight: 620, idealHeight: 720)
 		.onAppear(perform: loadInitialState)
 		.sheet(isPresented: $showCustomizeSigningSheet) {
 			SigningView(app: app, signAndInstall: false)
@@ -206,7 +209,20 @@ struct MacInstallSheetView: View {
 			VStack(alignment: .leading, spacing: 10) {
 				switch selectedMethod {
 				case .certlessCatalyst:
-					Toggle("Inject Keychain Fix (MacKeychainShim.dylib — fixes -34018 login crashes in Instagram & social apps)", isOn: $injectKeychainShim)
+					Toggle("Inject Keychain Fix (MacKeychainShim.dylib — fixes -34018 login crashes)", isOn: $injectKeychainShim)
+					Picker("Window Mode", selection: $windowMode) {
+						ForEach(MacWindowMode.allCases) { mode in
+							Text(mode.title).tag(mode)
+						}
+					}
+					.pickerStyle(.segmented)
+					Picker("Window Scale", selection: $windowScale) {
+						ForEach(MacWindowScale.allCases) { scale in
+							Text(scale.title).tag(scale)
+						}
+					}
+					.pickerStyle(.segmented)
+					Toggle("Auto-clean imported IPA cache after install (saves disk space)", isOn: $autoCleanAfterInstall)
 					destinationPicker
 
 				case .p12WrappedBundle:
@@ -465,8 +481,13 @@ struct MacInstallSheetView: View {
 						sourceAppBundleURL: workingAppDir,
 						customDisplayName: overrideName,
 						injectKeychainShim: injectKeychainShim,
+						windowMode: windowMode,
+						windowScale: windowScale,
 						destination: destination
 					)
+					if autoCleanAfterInstall {
+						MacStorageManager.cleanImportAndBuildCaches()
+					}
 					await MainActor.run {
 						installedAppURL = outURL
 						isRunning = false

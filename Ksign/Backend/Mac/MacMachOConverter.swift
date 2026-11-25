@@ -158,11 +158,17 @@ enum MacMachOConverter {
 		}
 
 		for machoURL in machos {
+			guard FileManager.default.fileExists(atPath: machoURL.path) else { continue }
 			if let info = try inspectMachO(at: machoURL) {
-				if info.isFairPlayEncrypted {
-					throw MacSideloadError.fairPlayEncrypted(binaryName: machoURL.lastPathComponent)
-				}
-				if !info.hasArm64Slice {
+				if info.isFairPlayEncrypted || !info.hasArm64Slice {
+					// Tweaked IPAs often leave iOS .appex extensions (in PlugIns/ or Extensions/) encrypted; strip incompatible extensions instead of aborting.
+					if let appexURL = enclosingAppexURL(for: machoURL) {
+						try? FileManager.default.removeItem(at: appexURL)
+						continue
+					}
+					if info.isFairPlayEncrypted {
+						throw MacSideloadError.fairPlayEncrypted(binaryName: machoURL.lastPathComponent)
+					}
 					throw MacSideloadError.missingArm64Slice(binaryName: machoURL.lastPathComponent)
 				}
 			}
@@ -178,6 +184,8 @@ enum MacMachOConverter {
 			}
 			plistDict.removeObject(forKey: "UIRequiredDeviceCapabilities")
 			plistDict.removeObject(forKey: "UISupportedDevices")
+			plistDict.removeObject(forKey: "LSRequiresIPhoneOS")
+			plistDict["CFBundleSupportedPlatforms"] = ["MacOSX"]
 			if plistDict["LSMinimumSystemVersion"] == nil {
 				plistDict["LSMinimumSystemVersion"] = "14.0"
 			}
@@ -292,6 +300,17 @@ enum MacMachOConverter {
 	}
 
 	@discardableResult
+	private static func enclosingAppexURL(for url: URL) -> URL? {
+		var current = url
+		while current.path != "/" {
+			if current.pathExtension.lowercased() == "appex" {
+				return current
+			}
+			current = current.deletingLastPathComponent()
+		}
+		return nil
+	}
+
 	static func runProcess(_ executable: String, arguments: [String]) -> (exitCode: Int32, stdout: String, stderr: String) {
 		let proc = Process()
 		proc.executableURL = URL(fileURLWithPath: executable)

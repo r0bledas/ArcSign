@@ -106,16 +106,23 @@ struct LibraryView: View {
 			}
 			.searchable(text: $_searchText, placement: .platform())
 			.overlay {
-				if _filteredSignedApps.isEmpty && _filteredImportedApps.isEmpty {
+				if (_selectedTab == 0 && _filteredImportedApps.isEmpty) || (_selectedTab == 1 && _filteredSignedApps.isEmpty) {
 					ContentUnavailableView {
-						Label(.localized("No Apps in Library"), systemImage: "square.stack.3d.up.fill")
+						Label(
+							_selectedTab == 0 ? .localized("No Imported IPAs") : .localized("No Signed Apps"),
+							systemImage: "square.stack.3d.up.fill"
+						)
 					} description: {
-						Text("Drag & drop any .ipa file anywhere onto this window, import from disk, or browse ESign/AltStore repos in the sidebar.")
+						Text(_selectedTab == 0
+							? "Drag & drop any .ipa file anywhere onto this window, import from disk, or browse ESign/AltStore repos in the sidebar."
+							: "Sign an imported .ipa to see it here, or use Method 1 (Certless Mac Install) directly from Imported IPAs.")
 					} actions: {
-						Button("Import .ipa File…") {
-							_isImportingPresenting = true
+						if _selectedTab == 0 {
+							Button("Import .ipa File…") {
+								_isImportingPresenting = true
+							}
+							.buttonStyle(.borderedProminent)
 						}
-						.buttonStyle(.borderedProminent)
 					}
 				}
 			}

@@ -11,6 +11,8 @@ import NimbleViews
 // MARK: - View
 struct SettingsView: View {
     @AppStorage("feather.selectedCert") private var _storedSelectedCert: Int = 0
+    @AppStorage("arcsign.autoCleanAfterInstall") private var _autoCleanAfterInstall: Bool = true
+    @State private var _cacheSizeText: String = "Calculating…"
     @FetchRequest(
         entity: CertificatePair.entity(),
         sortDescriptors: [NSSortDescriptor(keyPath: \CertificatePair.date, ascending: false)],
@@ -29,7 +31,7 @@ struct SettingsView: View {
     
     
 	private let _donationsUrl = "https://github.com/sponsors/nyasami"
-	private let _githubUrl = "https://github.com/nyasami/ksign"
+	private let _githubUrl = "https://github.com/r0bledas/ArcSign"
     private let _discordUrl = "https://discord.gg/sfbZfQzVdQ"
 	// MARK: Body
     var body: some View {
@@ -42,9 +44,11 @@ struct SettingsView: View {
 				_feedback()
 				
 				Section {
+                    #if os(iOS)
                     NavigationLink(destination: AppIconView()) {
                         Label(.localized("App Icon"), systemImage: "app.badge")
                     }
+                    #endif
 					NavigationLink(destination: AppearanceView()) {
                         Label(.localized("Appearance"), systemImage: "paintbrush")
                     }
@@ -96,6 +100,12 @@ struct SettingsView: View {
                 }
 
             }
+            #if os(macOS)
+            .formStyle(.grouped)
+            .onAppear {
+                _cacheSizeText = MacStorageManager.formattedCacheSize()
+            }
+            #endif
         }
     }
 }
@@ -122,6 +132,27 @@ extension SettingsView {
 	
 	@ViewBuilder
 	private func _directories() -> some View {
+		#if os(macOS)
+		NBSection("Storage & Workspace Cache") {
+			HStack {
+				Label("Cached IPAs & Staging Files", systemImage: "internaldrive")
+				Spacer()
+				Text(_cacheSizeText)
+					.foregroundStyle(.secondary)
+					.monospacedDigit()
+			}
+			Toggle("Auto-Clean Cache After Mac Install", isOn: $_autoCleanAfterInstall)
+			Button("Clean Cache Now", systemImage: "trash.slash") {
+				MacStorageManager.cleanImportAndBuildCaches()
+				_cacheSizeText = MacStorageManager.formattedCacheSize()
+			}
+			Button(.localized("Open Workspace Folder"), systemImage: "folder") {
+				UIApplication.open(FileManager.default.appWorkspaceDirectory.toSharedDocumentsURL()!)
+			}
+		} footer: {
+			Text("Certificates and Repo Sources are kept safe when cleaning the IPA cache (~/Library/Application Support/ArcSign).")
+		}
+		#else
 		NBSection(.localized("Misc")) {
 			Button(.localized("Open Workspace Folder"), systemImage: "folder") {
 				UIApplication.open(FileManager.default.appWorkspaceDirectory.toSharedDocumentsURL()!)
@@ -130,7 +161,8 @@ extension SettingsView {
 				UIApplication.open(FileManager.default.archives.toSharedDocumentsURL()!)
 			}
 		} footer: {
-			Text(.localized("All of Ksign files except certificates are contained in the documents directory, here are some quick links to these."))
+			Text(.localized("All of ArcSign files except certificates are contained in the documents directory, here are some quick links to these."))
 		}
+		#endif
 	}
 }

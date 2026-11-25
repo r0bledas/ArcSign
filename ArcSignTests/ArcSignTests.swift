@@ -124,7 +124,7 @@ final class ArcSignTests: XCTestCase {
 		)
 		defer { try? fm.removeItem(at: installedURL) }
 
-		let installedExec = installedURL.appendingPathComponent("MockIOSApp")
+		let installedExec = installedURL.appendingPathComponent("Contents/MacOS/MockIOSApp")
 		let afterInspect = try MacMachOConverter.inspectMachO(at: installedExec)
 		XCTAssertEqual(afterInspect?.platform, UInt32(PLATFORM_MACCATALYST), "Binary must be converted to PLATFORM_MACCATALYST (6)")
 		XCTAssertTrue(Zsign.checkSigned(appExecutable: installedExec.path), "Converted binary must carry a valid signature")
@@ -133,7 +133,7 @@ final class ArcSignTests: XCTestCase {
 		// 3. Verify deep strict ad-hoc signature & MacKeychainShim.dylib Mach-O linkage
 		let verifyRes = MacMachOConverter.runProcess("/usr/bin/codesign", arguments: ["--verify", "--deep", "--strict", installedURL.path])
 		XCTAssertEqual(verifyRes.exitCode, 0, "Converted bundle failed strict codesign verification: \(verifyRes.stderr)")
-		XCTAssertTrue(fm.fileExists(atPath: installedURL.appendingPathComponent("Frameworks/MacKeychainShim.dylib").path))
+		XCTAssertTrue(fm.fileExists(atPath: installedURL.appendingPathComponent("Contents/Frameworks/MacKeychainShim.dylib").path))
 	}
 
 	/// Verifies Method 2 & 3 WrappedBundle directory layout (`Wrapper/<Payload>.app` + `WrappedBundle` relative symlink + quarantine removal).

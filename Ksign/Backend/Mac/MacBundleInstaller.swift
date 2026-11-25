@@ -74,6 +74,75 @@ struct IPAPreflightReport {
 	let recommendationNote: String
 }
 
+enum MacWindowMode: String, CaseIterable, Identifiable {
+	case iphone = "iphone"
+	case ipad = "ipad"
+	case desktop = "desktop"
+
+	var id: String { rawValue }
+
+	var title: String {
+		switch self {
+		case .iphone: return "iPhone (9:16)"
+		case .ipad: return "iPad (4:3)"
+		case .desktop: return "Desktop (Free)"
+		}
+	}
+}
+
+enum MacWindowScale: Double, CaseIterable, Identifiable {
+	case x0_75 = 0.75
+	case x1_0 = 1.0
+	case x1_25 = 1.25
+
+	var id: Double { rawValue }
+
+	var title: String {
+		switch self {
+		case .x0_75: return "0.75×"
+		case .x1_0: return "1.0×"
+		case .x1_25: return "1.25×"
+		}
+	}
+}
+
+enum MacStorageManager {
+	static func workspaceCacheSizeBytes() -> Int64 {
+		let fm = FileManager.default
+		let dirs = [fm.archives, fm.unsigned, fm.signed, fm.appWorkspaceDirectory.appendingPathComponent("Tmp")]
+		var total: Int64 = 0
+		for dir in dirs {
+			guard let enumerator = fm.enumerator(at: dir, includingPropertiesForKeys: [.fileSizeKey], options: [.skipsHiddenFiles]) else { continue }
+			for case let fileURL as URL in enumerator {
+				if let values = try? fileURL.resourceValues(forKeys: [.fileSizeKey]),
+				   let size = values.fileSize {
+					total += Int64(size)
+				}
+			}
+		}
+		return total
+	}
+
+	static func formattedCacheSize() -> String {
+		ByteCountFormatter.string(fromByteCount: workspaceCacheSizeBytes(), countStyle: .file)
+	}
+
+	@discardableResult
+	static func cleanImportAndBuildCaches() -> Int64 {
+		let before = workspaceCacheSizeBytes()
+		let fm = FileManager.default
+		let dirs = [fm.archives, fm.unsigned, fm.signed, fm.appWorkspaceDirectory.appendingPathComponent("Tmp")]
+		for dir in dirs {
+			if let items = try? fm.contentsOfDirectory(at: dir, includingPropertiesForKeys: nil) {
+				for item in items {
+					try? fm.removeItem(at: item)
+				}
+			}
+		}
+		return before
+	}
+}
+
 enum MacInstallDestination: Hashable, Identifiable {
 	case systemApplications
 	case userApplications
@@ -205,6 +274,48 @@ enum MacBundleInstaller {
 		return dylibOut
 	}
 
+	/// Locates or compiles `MacWindowShim.dylib` on-the-fly for MacCatalyst (`arm64-apple-ios14.0-macabi`) if not already bundled.
+	static func resolveWindowShimDylib() throws -> URL {
+		if let bundled = Bundle.main.url(forResource: "MacWindowShim", withExtension: "dylib"),
+		   FileManager.default.fileExists(atPath: bundled.path) {
+			return bundled
+		}
+
+		let cacheDir = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
+			.appendingPathComponent("ArcSign/RuntimeShims", isDirectory: true)
+		try FileManager.default.createDirectory(at: cacheDir, withIntermediateDirectories: true)
+		let dylibOut = cacheDir.appendingPathComponent("MacWindowShim.dylib")
+		if FileManager.default.fileExists(atPath: dylibOut.path) {
+			return dylibOut
+		}
+
+		let candidateSources = [
+			Bundle.main.url(forResource: "MacWindowShim", withExtension: "m"),
+			URL(fileURLWithPath: #filePath).deletingLastPathComponent().appendingPathComponent("WindowShim/MacWindowShim.m")
+		].compactMap { $0 }
+
+		guard let srcURL = candidateSources.first(where: { FileManager.default.fileExists(atPath: $0.path) }) else {
+			throw MacSideloadError.installerFailed("MacWindowShim.dylib not found in app bundle resources.")
+		}
+
+		let compile = MacMachOConverter.runProcess(
+			"/usr/bin/xcrun",
+			arguments: [
+				"clang", "-dynamiclib", "-fobjc-arc",
+				"-target", "arm64-apple-ios14.0-macabi",
+				"-isysroot", sdkPath(),
+				"-F/System/iOSSupport/System/Library/Frameworks",
+				"-framework", "Foundation", "-framework", "CoreGraphics",
+				"-install_name", "@executable_path/Frameworks/MacWindowShim.dylib",
+				srcURL.path, "-o", dylibOut.path
+			]
+		)
+		guard compile.exitCode == 0 else {
+			throw MacSideloadError.installerFailed("Failed compiling MacWindowShim.dylib: \(compile.stderr)")
+		}
+		return dylibOut
+	}
+
 	private static func sdkPath() -> String {
 		let out = MacMachOConverter.runProcess("/usr/bin/xcrun", arguments: ["--sdk", "macosx", "--show-sdk-path"]).stdout
 		return out.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -216,6 +327,8 @@ enum MacBundleInstaller {
 		sourceAppBundleURL: URL,
 		customDisplayName: String? = nil,
 		injectKeychainShim: Bool = true,
+		windowMode: MacWindowMode = .iphone,
+		windowScale: MacWindowScale = .x1_0,
 		destination: MacInstallDestination = .systemApplications
 	) async throws -> URL {
 		let fm = FileManager.default
@@ -229,26 +342,38 @@ enum MacBundleInstaller {
 		// 1. Convert all Mach-O binaries inside stagingAppURL to MacCatalyst (PLATFORM_MACCATALYST = 6)
 		try MacMachOConverter.convertAppBundleToMacCatalyst(appBundleURL: stagingAppURL)
 
-		// 2. Optionally inject MacKeychainShim.dylib so SecItem* calls (-34018) persist locally
+		// 2. Write window mode, scale, and indirect input settings into Info.plist
 		let infoPlistURL = stagingAppURL.appendingPathComponent("Info.plist")
+		if let plist = NSMutableDictionary(contentsOf: infoPlistURL) {
+			plist["ArcSignWindowMode"] = windowMode.rawValue
+			plist["ArcSignWindowScale"] = windowScale.rawValue
+			plist["UIApplicationSupportsIndirectInputEvents"] = true
+			plist.write(to: infoPlistURL, atomically: true)
+		}
+
+		// 3. Optionally inject MacKeychainShim.dylib & MacWindowShim.dylib
 		let infoDict = NSDictionary(contentsOf: infoPlistURL)
 		let execName = (infoDict?["CFBundleExecutable"] as? String) ?? stagingAppURL.deletingPathExtension().lastPathComponent
 		let mainExecURL = stagingAppURL.appendingPathComponent(execName)
 
-		if injectKeychainShim, fm.fileExists(atPath: mainExecURL.path) {
-			let shimSource = try resolveKeychainShimDylib()
+		if fm.fileExists(atPath: mainExecURL.path) {
 			let frameworksDir = stagingAppURL.appendingPathComponent("Frameworks", isDirectory: true)
 			try fm.createDirectory(at: frameworksDir, withIntermediateDirectories: true)
-			let shimDest = frameworksDir.appendingPathComponent("MacKeychainShim.dylib")
-			if fm.fileExists(atPath: shimDest.path) {
-				try fm.removeItem(at: shimDest)
+
+			if injectKeychainShim {
+				let shimSource = try resolveKeychainShimDylib()
+				let shimDest = frameworksDir.appendingPathComponent("MacKeychainShim.dylib")
+				if fm.fileExists(atPath: shimDest.path) { try fm.removeItem(at: shimDest) }
+				try fm.copyItem(at: shimSource, to: shimDest)
+				_ = Zsign.injectDyLib(appExecutable: mainExecURL.path, with: "@executable_path/Frameworks/MacKeychainShim.dylib", weak: true)
 			}
-			try fm.copyItem(at: shimSource, to: shimDest)
-			_ = Zsign.injectDyLib(
-				appExecutable: mainExecURL.path,
-				with: "@executable_path/Frameworks/MacKeychainShim.dylib",
-				weak: true
-			)
+
+			if let winSource = try? resolveWindowShimDylib() {
+				let winDest = frameworksDir.appendingPathComponent("MacWindowShim.dylib")
+				if fm.fileExists(atPath: winDest.path) { try fm.removeItem(at: winDest) }
+				try fm.copyItem(at: winSource, to: winDest)
+				_ = Zsign.injectDyLib(appExecutable: mainExecURL.path, with: "@executable_path/Frameworks/MacWindowShim.dylib", weak: true)
+			}
 		}
 
 		// 3. Ensure @executable_path/Frameworks rpath is present on main executable
@@ -276,7 +401,10 @@ enum MacBundleInstaller {
 		let entData = try PropertyListSerialization.data(fromPropertyList: safeEntitlements, format: .xml, options: 0)
 		try entData.write(to: entitlementsURL)
 
-		// 5. Ad-hoc sign nested frameworks, dylibs, plugins, then root .app bundle
+		// 5. Restructure flat iOS bundle into macOS Contents/ layout so LaunchServices launches it natively
+		try restructureToMacOSBundle(at: stagingAppURL, executableName: execName)
+
+		// 6. Ad-hoc sign nested frameworks, dylibs, then root .app bundle
 		try adhocSignBundleBottomUp(appBundleURL: stagingAppURL, entitlementsURL: entitlementsURL)
 
 		// 6. Place into /Applications (or ~/Applications fallback)
@@ -291,12 +419,53 @@ enum MacBundleInstaller {
 		return finalAppURL
 	}
 
+	private static func restructureToMacOSBundle(at appBundleURL: URL, executableName: String) throws {
+		let fm = FileManager.default
+		let contentsURL = appBundleURL.appendingPathComponent("Contents", isDirectory: true)
+		let macOSURL = contentsURL.appendingPathComponent("MacOS", isDirectory: true)
+		if fm.fileExists(atPath: macOSURL.path) { return }
+
+		let resourcesURL = contentsURL.appendingPathComponent("Resources", isDirectory: true)
+		try fm.createDirectory(at: macOSURL, withIntermediateDirectories: true)
+		try fm.createDirectory(at: resourcesURL, withIntermediateDirectories: true)
+
+		let items = try fm.contentsOfDirectory(at: appBundleURL, includingPropertiesForKeys: nil)
+		for item in items {
+			let name = item.lastPathComponent
+			if name == "Contents" { continue }
+			if name == executableName || item.pathExtension.lowercased() == "dylib" {
+				try fm.moveItem(at: item, to: macOSURL.appendingPathComponent(name))
+			} else if name == "Frameworks" || name == "Info.plist" || name == "PkgInfo" {
+				try fm.moveItem(at: item, to: contentsURL.appendingPathComponent(name))
+			} else {
+				try fm.moveItem(at: item, to: resourcesURL.appendingPathComponent(name))
+			}
+		}
+
+		// Symlink Contents/MacOS/Frameworks -> ../Frameworks so @executable_path/Frameworks/... resolves
+		let frameworksSymlink = macOSURL.appendingPathComponent("Frameworks")
+		if !fm.fileExists(atPath: frameworksSymlink.path) {
+			try? fm.createSymbolicLink(atPath: frameworksSymlink.path, withDestinationPath: "../Frameworks")
+		}
+	}
+
 	private static func adhocSignBundleBottomUp(appBundleURL: URL, entitlementsURL: URL) throws {
 		let fm = FileManager.default
-		// Sign Frameworks/*.dylib and Frameworks/*.framework first
-		let frameworksURL = appBundleURL.appendingPathComponent("Frameworks", isDirectory: true)
+		// Sign Contents/Frameworks/*.dylib and *.framework first
+		let frameworksURL = appBundleURL.appendingPathComponent("Contents/Frameworks", isDirectory: true)
 		if let items = try? fm.contentsOfDirectory(at: frameworksURL, includingPropertiesForKeys: nil) {
 			for item in items {
+				let res = MacMachOConverter.runProcess("/usr/bin/codesign", arguments: ["--force", "--sign", "-", "--timestamp=none", item.path])
+				if res.exitCode != 0 {
+					throw MacSideloadError.codesignFailed("Failed signing \(item.lastPathComponent): \(res.stderr)")
+				}
+			}
+		}
+
+		// Sign any tweak .dylibs placed in Contents/MacOS/ (e.g. Regram.dylib)
+		let macOSURL = appBundleURL.appendingPathComponent("Contents/MacOS", isDirectory: true)
+		if let macOSItems = try? fm.contentsOfDirectory(at: macOSURL, includingPropertiesForKeys: nil) {
+			for item in macOSItems where item.pathExtension.lowercased() == "dylib" {
 				let res = MacMachOConverter.runProcess("/usr/bin/codesign", arguments: ["--force", "--sign", "-", "--timestamp=none", item.path])
 				if res.exitCode != 0 {
 					throw MacSideloadError.codesignFailed("Failed signing \(item.lastPathComponent): \(res.stderr)")
