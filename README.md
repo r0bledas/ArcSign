@@ -24,7 +24,9 @@ When you drop an `.ipa` or `.tipa` into ArcSign, `MacBundleInstaller` inspects t
 
 ## Key Features
 
-- **Lightweight Native Footprint (~23 MB `.app`):** Replaces heavy multi-hundred-megabyte external binary frameworks and server stacks with Apple's built-in `Network.framework` (`NWListener`) for LAN OTA and `xcrun devicectl` for iOS USB/Wi-Fi installation.
+- **Lightweight Native Footprint (~32 MB `.app`):** Replaces heavy multi-hundred-megabyte external binary frameworks and server stacks with Apple's built-in `Network.framework` (`NWListener`) for LAN OTA and `xcrun devicectl` for iOS USB/Wi-Fi installation.
+- **Window Mode & Scale Controls (`MacWindowShim`):** Choose **iPhone (`9:16`)**, **iPad (`4:3`)**, or **Desktop (Free)** aspect ratios and `0.75×` / `1.0×` / `1.25×` scaling per app, with automatic macOS `Contents/` bundle restructuring and stripping of encrypted iOS-only `.appex` extensions.
+- **In-App Storage & App Data Cleaner:** Auto-cleans `.ipa` archive caches after install, displays live workspace cache usage in **Settings**, and lets you wipe saved logins (`.ArcSignKeychain`), preferences, and caches for sideloaded apps in one click.
 - **AltStore & Encrypted ESign Repo Browser:** Built-in `AltSourceKit` support for browsing, decrypting (`ASDecrypt`), and downloading from both AltStore `.json` sources and encrypted ESign repositories.
 - **Tweak & Payload Studio:** Inject `.dylib` and `.deb` tweaks, bundle `ellekit.deb`, edit `Info.plist` and binary files in-app, strip extensions, or clone apps side-by-side with custom `CFBundleIdentifier`s.
 - **Live OCSP Certificate & Mac UDID Inspector:** Verifies `.p12` revocation status live against Apple OCSP via `Security.framework` (with WWDR G2–G6 support) and checks whether `.mobileprovision` files authorize your Mac's Provisioning UDID—without modifying `/etc/hosts`.
