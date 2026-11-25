@@ -141,6 +141,52 @@ enum MacStorageManager {
 		}
 		return before
 	}
+
+	/// Removes all unsandboxed app data, preferences, caches, saved window state, and KeychainShim tokens for a bundle ID.
+	static func wipeAppData(forBundleID bundleID: String) {
+		guard !bundleID.isEmpty else { return }
+		let fm = FileManager.default
+		let home = fm.homeDirectoryForCurrentUser
+		let appSupport = fm.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
+		let caches = fm.urls(for: .cachesDirectory, in: .userDomainMask).first!
+		let prefs = home.appendingPathComponent("Library/Preferences", isDirectory: true)
+		let savedState = home.appendingPathComponent("Library/Saved Application State", isDirectory: true)
+		let docs = home.appendingPathComponent("Documents", isDirectory: true)
+
+		let exactTargets: [URL] = [
+			appSupport.appendingPathComponent(".ArcSignKeychain/\(bundleID).plist"),
+			appSupport.appendingPathComponent(bundleID),
+			docs.appendingPathComponent("group.\(bundleID)"),
+			prefs.appendingPathComponent("\(bundleID).plist"),
+			prefs.appendingPathComponent("group.\(bundleID).plist"),
+			savedState.appendingPathComponent("\(bundleID).savedState")
+		]
+		for url in exactTargets {
+			try? fm.removeItem(at: url)
+		}
+		if bundleID == "com.burbn.instagram" {
+			try? fm.removeItem(at: docs.appendingPathComponent("group.com.facebook.family"))
+		}
+
+		// Also remove any prefix-matched caches (e.g. com.burbn.instagram.IGCache-data)
+		if let cacheItems = try? fm.contentsOfDirectory(at: caches, includingPropertiesForKeys: nil) {
+			for item in cacheItems where item.lastPathComponent == bundleID || item.lastPathComponent.hasPrefix(bundleID + ".") {
+				try? fm.removeItem(at: item)
+			}
+		}
+	}
+
+	/// Lists bundle IDs that have stored `.ArcSignKeychain` records.
+	static func storedKeychainBundleIDs() -> [String] {
+		let fm = FileManager.default
+		let shimDir = fm.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
+			.appendingPathComponent(".ArcSignKeychain", isDirectory: true)
+		guard let items = try? fm.contentsOfDirectory(at: shimDir, includingPropertiesForKeys: nil) else { return [] }
+		return items
+			.filter { $0.pathExtension == "plist" }
+			.map { $0.deletingPathExtension().lastPathComponent }
+			.sorted()
+	}
 }
 
 enum MacInstallDestination: Hashable, Identifiable {
@@ -263,6 +309,7 @@ enum MacBundleInstaller {
 				"-F/System/iOSSupport/System/Library/Frameworks",
 				"-framework", "Foundation",
 				"-framework", "Security",
+				"-framework", "CoreGraphics",
 				"-install_name", "@executable_path/Frameworks/MacKeychainShim.dylib",
 				srcURL.path,
 				"-o", dylibOut.path
@@ -366,9 +413,7 @@ enum MacBundleInstaller {
 				if fm.fileExists(atPath: shimDest.path) { try fm.removeItem(at: shimDest) }
 				try fm.copyItem(at: shimSource, to: shimDest)
 				_ = Zsign.injectDyLib(appExecutable: mainExecURL.path, with: "@executable_path/Frameworks/MacKeychainShim.dylib", weak: true)
-			}
-
-			if let winSource = try? resolveWindowShimDylib() {
+			} else if let winSource = try? resolveWindowShimDylib() {
 				let winDest = frameworksDir.appendingPathComponent("MacWindowShim.dylib")
 				if fm.fileExists(atPath: winDest.path) { try fm.removeItem(at: winDest) }
 				try fm.copyItem(at: winSource, to: winDest)

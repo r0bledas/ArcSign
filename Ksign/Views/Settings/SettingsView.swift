@@ -13,6 +13,7 @@ struct SettingsView: View {
     @AppStorage("feather.selectedCert") private var _storedSelectedCert: Int = 0
     @AppStorage("arcsign.autoCleanAfterInstall") private var _autoCleanAfterInstall: Bool = true
     @State private var _cacheSizeText: String = "Calculating…"
+    @State private var _storedAppBundleIDs: [String] = []
     @FetchRequest(
         entity: CertificatePair.entity(),
         sortDescriptors: [NSSortDescriptor(keyPath: \CertificatePair.date, ascending: false)],
@@ -104,6 +105,7 @@ struct SettingsView: View {
             .formStyle(.grouped)
             .onAppear {
                 _cacheSizeText = MacStorageManager.formattedCacheSize()
+                _storedAppBundleIDs = MacStorageManager.storedKeychainBundleIDs()
             }
             #endif
         }
@@ -151,6 +153,26 @@ extension SettingsView {
 			}
 		} footer: {
 			Text("Certificates and Repo Sources are kept safe when cleaning the IPA cache (~/Library/Application Support/ArcSign).")
+		}
+
+		if !_storedAppBundleIDs.isEmpty {
+			NBSection("Installed Mac App Data & Logins Cleaner") {
+				ForEach(_storedAppBundleIDs, id: \.self) { bundleID in
+					HStack {
+						Label(bundleID, systemImage: "app.badge.checkmark")
+							.font(.callout.monospaced())
+						Spacer()
+						Button("Wipe Data", role: .destructive) {
+							MacStorageManager.wipeAppData(forBundleID: bundleID)
+							_storedAppBundleIDs = MacStorageManager.storedKeychainBundleIDs()
+						}
+						.buttonStyle(.bordered)
+						.controlSize(.small)
+					}
+				}
+			} footer: {
+				Text("Removes saved logins (.ArcSignKeychain), preferences, caches, and saved window state for uninstalled sideloaded apps.")
+			}
 		}
 		#else
 		NBSection(.localized("Misc")) {

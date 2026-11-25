@@ -27,6 +27,7 @@ struct MacInstallSheetView: View {
 	@State private var injectKeychainShim: Bool = true
 	@State private var windowMode: MacWindowMode = .iphone
 	@State private var windowScale: MacWindowScale = .x1_0
+	@State private var wipeExistingAppData: Bool = false
 	@AppStorage("arcsign.autoCleanAfterInstall") private var autoCleanAfterInstall: Bool = true
 	@State private var destination: MacInstallDestination = .systemApplications
 	@State private var selectedCertIndex: Int = UserDefaults.standard.integer(forKey: "feather.selectedCert")
@@ -98,7 +99,7 @@ struct MacInstallSheetView: View {
 		.onAppear(perform: loadInitialState)
 		.sheet(isPresented: $showCustomizeSigningSheet) {
 			SigningView(app: app, signAndInstall: false)
-				.frame(minWidth: 560, minHeight: 540)
+				.frame(minWidth: 620, idealWidth: 660, minHeight: 580, idealHeight: 660)
 		}
 		.sheet(isPresented: $showLegacyOTAInstaller) {
 			InstallPreviewView(app: app, isSharing: false)
@@ -223,6 +224,7 @@ struct MacInstallSheetView: View {
 					}
 					.pickerStyle(.segmented)
 					Toggle("Auto-clean imported IPA cache after install (saves disk space)", isOn: $autoCleanAfterInstall)
+					Toggle("Wipe existing app data & saved logins before installing", isOn: $wipeExistingAppData)
 					destinationPicker
 
 				case .p12WrappedBundle:
@@ -401,7 +403,7 @@ struct MacInstallSheetView: View {
 			Button("Close") {
 				dismiss()
 			}
-			.keyboardShortcut(.cancelAction)
+			.keyboardShortcut("w", modifiers: .command)
 
 			Button(primaryButtonTitle) {
 				runSelectedMethod()
@@ -477,6 +479,9 @@ struct MacInstallSheetView: View {
 					}
 					defer { if let tempCleanup { try? FileManager.default.removeItem(at: tempCleanup) } }
 
+					if wipeExistingAppData, let targetID = overrideID ?? app.identifier {
+						MacStorageManager.wipeAppData(forBundleID: targetID)
+					}
 					let outURL = try await MacBundleInstaller.installCertlessCatalystApp(
 						sourceAppBundleURL: workingAppDir,
 						customDisplayName: overrideName,

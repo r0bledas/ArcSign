@@ -69,26 +69,42 @@ struct SigningView: View {
 				_cert()
 				_customizationProperties(for: app)
 			}
+			#if os(macOS)
+			.formStyle(.grouped)
+			#endif
 			.disabled(_isSigning)
 			.safeAreaInset(edge: .bottom) {
-				if _isSigning {
-					Button() {
-						_isLogsPresenting = true
-					} label: {
-						NBSheetButton(title: .localized("Show Logs"))
+				HStack(spacing: 12) {
+					#if os(macOS)
+					Button("Close") {
+						dismiss()
 					}
-					.tint(.secondary)
-					.compatMatchedTransitionSource(id: "showLogs", ns: _namespace)
-				} else {
-					Button() {
-						_start()
-					} label: {
-						NBSheetButton(title: .localized("Start Signing"))
+					.keyboardShortcut("w", modifiers: .command)
+					.buttonStyle(.bordered)
+					#endif
+					if _isSigning {
+						Button() {
+							_isLogsPresenting = true
+						} label: {
+							NBSheetButton(title: .localized("Show Logs"))
+						}
+						.tint(.secondary)
+						.compatMatchedTransitionSource(id: "showLogs", ns: _namespace)
+					} else {
+						Button() {
+							_start()
+						} label: {
+							NBSheetButton(title: .localized("Start Signing"))
+						}
 					}
 				}
+				.padding(.horizontal, 16)
+				.padding(.bottom, 8)
 			}
 			.toolbar {
+				#if os(iOS)
 				NBToolbarButton(role: .dismiss)
+				#endif
 				
 				NBToolbarButton(
 					.localized("Reset"),
