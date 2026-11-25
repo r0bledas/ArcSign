@@ -128,6 +128,25 @@ enum MacStorageManager {
 	}
 
 	@discardableResult
+	static func cleanArchivesAndTmpOnly() -> Int64 {
+		let fm = FileManager.default
+		let dirs = [fm.archives, fm.appWorkspaceDirectory.appendingPathComponent("Tmp")]
+		var freed: Int64 = 0
+		for dir in dirs {
+			if let items = try? fm.contentsOfDirectory(at: dir, includingPropertiesForKeys: [.fileSizeKey]) {
+				for item in items {
+					if let size = (try? item.resourceValues(forKeys: [.fileSizeKey]))?.fileSize {
+						freed += Int64(size)
+					}
+					try? fm.removeItem(at: item)
+				}
+			}
+		}
+		return freed
+	}
+
+	@MainActor
+	@discardableResult
 	static func cleanImportAndBuildCaches() -> Int64 {
 		let before = workspaceCacheSizeBytes()
 		let fm = FileManager.default
@@ -139,6 +158,10 @@ enum MacStorageManager {
 				}
 			}
 		}
+		let imported = (try? Storage.shared.context.fetch(Imported.fetchRequest())) ?? []
+		for item in imported { Storage.shared.deleteApp(for: item) }
+		let signed = (try? Storage.shared.context.fetch(Signed.fetchRequest())) ?? []
+		for item in signed { Storage.shared.deleteApp(for: item) }
 		return before
 	}
 

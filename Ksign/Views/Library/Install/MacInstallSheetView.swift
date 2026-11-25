@@ -443,7 +443,8 @@ struct MacInstallSheetView: View {
 
 	private func runSelectedMethod() {
 		guard let sourceAppDir = Storage.shared.getAppDirectory(for: app) else {
-			errorMessage = "Could not locate extracted .app directory in Library."
+			Storage.shared.deleteApp(for: app)
+			errorMessage = "This app's cached files were already cleaned. Removed stale entry—please re-import the .ipa."
 			return
 		}
 
@@ -491,7 +492,7 @@ struct MacInstallSheetView: View {
 						destination: destination
 					)
 					if autoCleanAfterInstall {
-						MacStorageManager.cleanImportAndBuildCaches()
+						MacStorageManager.cleanArchivesAndTmpOnly()
 					}
 					await MainActor.run {
 						installedAppURL = outURL
