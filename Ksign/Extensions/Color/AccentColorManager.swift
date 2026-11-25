@@ -1,0 +1,64 @@
+//
+//  AccentColorManager.swift
+//  Ksign
+//
+
+import SwiftUI
+#if canImport(UIKit)
+import UIKit
+#elseif os(macOS)
+import AppKit
+#endif
+
+class AccentColorManager: ObservableObject {
+	static let shared = AccentColorManager()
+	
+	@AppStorage("Feather.accentColor") private var _selectedAccentColor: Int = 0 {
+		didSet {
+			objectWillChange.send()
+		}
+	}
+	
+	private let _accentColors: [(color: Color, uiColor: UIColor)] = [
+		(Color(red: 0x53/255, green: 0x94/255, blue: 0xF7/255), UIColor(red: 0x53/255, green: 0x94/255, blue: 0xF7/255, alpha: 1.0)),
+		(Color(red: 0xFF/255, green: 0x8B/255, blue: 0x92/255), UIColor(red: 0xFF/255, green: 0x8B/255, blue: 0x92/255, alpha: 1.0)),
+		(.red, .systemRed),
+		(.orange, .systemOrange),
+		(.yellow, .systemYellow),
+		(.green, .systemGreen),
+		(.blue, .systemBlue),
+		(.purple, .systemPurple),
+		(.pink, .systemPink),
+		(.indigo, .systemIndigo),
+		(.mint, .systemMint),
+		(.cyan, .systemCyan),
+		(.teal, .systemTeal)
+	]
+	
+	var currentAccentColor: Color {
+		guard _selectedAccentColor < _accentColors.count else {
+			return _accentColors[0].color
+		}
+		return _accentColors[_selectedAccentColor].color
+	}
+	
+	var currentUIColor: UIColor {
+		guard _selectedAccentColor < _accentColors.count else {
+			return _accentColors[0].uiColor
+		}
+		return _accentColors[_selectedAccentColor].uiColor
+	}
+	
+	func updateGlobalTintColor() {
+		#if os(iOS)
+		DispatchQueue.main.async {
+			UIApplication.shared.connectedScenes
+				.compactMap { $0 as? UIWindowScene }
+				.flatMap { $0.windows }
+				.forEach { window in
+					window.tintColor = self.currentUIColor
+				}
+		}
+		#endif
+	}
+}

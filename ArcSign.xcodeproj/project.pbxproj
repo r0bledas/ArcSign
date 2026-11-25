@@ -1,0 +1,661 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		330F69012DC03DF500D8C35D /* NimbleExtensions in Frameworks */ = {isa = PBXBuildFile; productRef = 330F69002DC03DF500D8C35D /* NimbleExtensions */; };
+		330F69032DC03DF500D8C35D /* NimbleViews in Frameworks */ = {isa = PBXBuildFile; productRef = 330F69022DC03DF500D8C35D /* NimbleViews */; };
+		3346F5C22DC329A200C7D508 /* ZsignSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 3346F5C12DC329A200C7D508 /* ZsignSwift */; };
+		3346F83B2DC6C6D100C7D508 /* NukeUI in Frameworks */ = {isa = PBXBuildFile; productRef = 3346F83A2DC6C6D100C7D508 /* NukeUI */; };
+		3346F8492DC6D64800C7D508 /* NimbleJSON in Frameworks */ = {isa = PBXBuildFile; productRef = 3346F8482DC6D64800C7D508 /* NimbleJSON */; };
+		33693A082DC8BF5B00730215 /* AltSourceKit in Frameworks */ = {isa = PBXBuildFile; productRef = 33693A072DC8BF5B00730215 /* AltSourceKit */; };
+		3371F7322DA9ECDD00281AC6 /* Zip in Frameworks */ = {isa = PBXBuildFile; productRef = 3371F7312DA9ECDD00281AC6 /* Zip */; };
+		33CF13392DB5ACFB0021D4C5 /* SWCompression in Frameworks */ = {isa = PBXBuildFile; productRef = 33CF13382DB5ACFB0021D4C5 /* SWCompression */; };
+		C42CC1AF2F4370F20064A4A2 /* IDeviceSwift in Frameworks */ = {isa = PBXBuildFile; productRef = C42CC1AE2F4370F20064A4A2 /* IDeviceSwift */; };
+		C451296C2E54F0DC00E94CC7 /* ZIPFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = C451296B2E54F0DB00E94CC7 /* ZIPFoundation */; };
+		C4CEAE0C2DDF4735007EF880 /* ArArchiveKit in Frameworks */ = {isa = PBXBuildFile; productRef = C4CEAE0B2DDF4735007EF880 /* ArArchiveKit */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		AABA5D1D2DB3C87800BFCD2C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 3379C1B12DA869A1004372DA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 3379C1B82DA869A1004372DA;
+			remoteInfo = ArcSign;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		3379C1B92DA869A1004372DA /* ArcSign.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ArcSign.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		AABA5D192DB3C87800BFCD2C /* ArcSignTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ArcSignTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		3371F6492DA92A1800281AC6 /* Exceptions for "Ksign" folder in "ArcSign" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Backend/Mac/KeychainShim/MacKeychainShim.m,
+				Resources/ellekit.deb,
+				Resources/Info.plist,
+			);
+			target = 3379C1B82DA869A1004372DA /* ArcSign */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
+/* Begin PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
+		33CF134C2DB5B9BC0021D4C5 /* Exceptions for "Ksign" folder in "Copy Bundle Resources" phase from "ArcSign" target */ = {
+			isa = PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet;
+			buildPhase = 3379C1B72DA869A1004372DA /* Resources */;
+			membershipExceptions = (
+				Resources/Info.plist,
+			);
+		};
+/* End PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		3379C1BB2DA869A1004372DA /* Ksign */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				3371F6492DA92A1800281AC6 /* Exceptions for "Ksign" folder in "ArcSign" target */,
+				33CF134C2DB5B9BC0021D4C5 /* Exceptions for "Ksign" folder in "Copy Bundle Resources" phase from "ArcSign" target */,
+			);
+			path = Ksign;
+			sourceTree = "<group>";
+		};
+		E51DE1002DB3C87800BFCD2C /* ArcSignTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = ArcSignTests;
+			sourceTree = "<group>";
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		3379C1B62DA869A1004372DA /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C4CEAE0C2DDF4735007EF880 /* ArArchiveKit in Frameworks */,
+				C42CC1AF2F4370F20064A4A2 /* IDeviceSwift in Frameworks */,
+				3346F5C22DC329A200C7D508 /* ZsignSwift in Frameworks */,
+				3346F8492DC6D64800C7D508 /* NimbleJSON in Frameworks */,
+				330F69012DC03DF500D8C35D /* NimbleExtensions in Frameworks */,
+				33CF13392DB5ACFB0021D4C5 /* SWCompression in Frameworks */,
+				33693A082DC8BF5B00730215 /* AltSourceKit in Frameworks */,
+				3371F7322DA9ECDD00281AC6 /* Zip in Frameworks */,
+				330F69032DC03DF500D8C35D /* NimbleViews in Frameworks */,
+				3346F83B2DC6C6D100C7D508 /* NukeUI in Frameworks */,
+				C451296C2E54F0DC00E94CC7 /* ZIPFoundation in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AABA5D162DB3C87800BFCD2C /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		3379C1B02DA869A1004372DA = {
+			isa = PBXGroup;
+			children = (
+				3379C1BB2DA869A1004372DA /* Ksign */,
+				E51DE1002DB3C87800BFCD2C /* ArcSignTests */,
+				3379C1BA2DA869A1004372DA /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		3379C1BA2DA869A1004372DA /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				3379C1B92DA869A1004372DA /* ArcSign.app */,
+				AABA5D192DB3C87800BFCD2C /* ArcSignTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		3379C1B82DA869A1004372DA /* ArcSign */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 3379C1CD2DA869A3004372DA /* Build configuration list for PBXNativeTarget "ArcSign" */;
+			buildPhases = (
+				3379C1B52DA869A1004372DA /* Sources */,
+				3379C1B62DA869A1004372DA /* Frameworks */,
+				3379C1B72DA869A1004372DA /* Resources */,
+				3379BC662DC9DB32004372DA /* Build MacKeychainShim.dylib */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				3379C1BB2DA869A1004372DA /* Ksign */,
+			);
+			name = ArcSign;
+			packageProductDependencies = (
+				3371F7312DA9ECDD00281AC6 /* Zip */,
+				33CF13382DB5ACFB0021D4C5 /* SWCompression */,
+				330F69002DC03DF500D8C35D /* NimbleExtensions */,
+				330F69022DC03DF500D8C35D /* NimbleViews */,
+				3346F5C12DC329A200C7D508 /* ZsignSwift */,
+				3346F83A2DC6C6D100C7D508 /* NukeUI */,
+				3346F8482DC6D64800C7D508 /* NimbleJSON */,
+				33693A072DC8BF5B00730215 /* AltSourceKit */,
+				C4CEAE0B2DDF4735007EF880 /* ArArchiveKit */,
+				C451296B2E54F0DB00E94CC7 /* ZIPFoundation */,
+				C42CC1AE2F4370F20064A4A2 /* IDeviceSwift */,
+			);
+			productName = ArcSign;
+			productReference = 3379C1B92DA869A1004372DA /* ArcSign.app */;
+			productType = "com.apple.product-type.application";
+		};
+		AABA5D182DB3C87800BFCD2C /* ArcSignTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = AABA5D1F2DB3C87800BFCD2C /* Build configuration list for PBXNativeTarget "ArcSignTests" */;
+			buildPhases = (
+				AABA5D152DB3C87800BFCD2C /* Sources */,
+				AABA5D162DB3C87800BFCD2C /* Frameworks */,
+				AABA5D172DB3C87800BFCD2C /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				AABA5D1E2DB3C87800BFCD2C /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				E51DE1002DB3C87800BFCD2C /* ArcSignTests */,
+			);
+			name = ArcSignTests;
+			packageProductDependencies = (
+			);
+			productName = ArcSignTests;
+			productReference = AABA5D192DB3C87800BFCD2C /* ArcSignTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		3379C1B12DA869A1004372DA /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1630;
+				LastUpgradeCheck = 1630;
+				TargetAttributes = {
+					3379C1B82DA869A1004372DA = {
+						CreatedOnToolsVersion = 16.2;
+						LastSwiftMigration = 1620;
+					};
+					AABA5D182DB3C87800BFCD2C = {
+						CreatedOnToolsVersion = 16.3;
+						TestTargetID = 3379C1B82DA869A1004372DA;
+					};
+				};
+			};
+			buildConfigurationList = 3379C1B42DA869A1004372DA /* Build configuration list for PBXProject "ArcSign" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+				de,
+				fr,
+				ru,
+				es,
+				vi,
+				tr,
+			);
+			mainGroup = 3379C1B02DA869A1004372DA;
+			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				3371F6F52DA9EBA500281AC6 /* XCRemoteSwiftPackageReference "Zip" */,
+				33CF13372DB5ACFB0021D4C5 /* XCRemoteSwiftPackageReference "SWCompression" */,
+				330F68FF2DC03DF400D8C35D /* XCLocalSwiftPackageReference "NimbleKit" */,
+				3346F8372DC6C68300C7D508 /* XCRemoteSwiftPackageReference "Nuke" */,
+				33693A062DC8BF5B00730215 /* XCLocalSwiftPackageReference "AltSourceKit" */,
+				C4CEAE0A2DDF416B007EF880 /* XCRemoteSwiftPackageReference "ArArchiveKit" */,
+				C40422132E119AF900D1F324 /* XCLocalSwiftPackageReference "Zsign" */,
+				C45128062E54E8E900E94CC7 /* XCRemoteSwiftPackageReference "ZIPFoundation" */,
+				C42CC1AB2F4370F20064A4A2 /* XCLocalSwiftPackageReference "IDeviceKit" */,
+			);
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 3379C1BA2DA869A1004372DA /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				3379C1B82DA869A1004372DA /* ArcSign */,
+				AABA5D182DB3C87800BFCD2C /* ArcSignTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		3379C1B72DA869A1004372DA /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AABA5D172DB3C87800BFCD2C /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		3379BC662DC9DB32004372DA /* Build MacKeychainShim.dylib */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"$(PROJECT_DIR)/Ksign/Backend/Mac/KeychainShim/MacKeychainShim.m",
+			);
+			name = "Build MacKeychainShim.dylib";
+			outputPaths = (
+				"$(BUILT_PRODUCTS_DIR)/$(UNLOCALIZED_RESOURCES_FOLDER_PATH)/MacKeychainShim.dylib",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "set -e\nRES_DIR=\"${BUILT_PRODUCTS_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}\"\nmkdir -p \"${RES_DIR}\"\ncp \"${PROJECT_DIR}/Ksign/Resources/ellekit.deb\" \"${RES_DIR}/ellekit.deb\" 2>/dev/null || true\nSDK_PATH=$(xcrun --sdk macosx --show-sdk-path)\nxcrun clang -dynamiclib -fobjc-arc \\\n  -target arm64-apple-ios14.0-macabi \\\n  -isysroot \"${SDK_PATH}\" \\\n  -F/System/iOSSupport/System/Library/Frameworks \\\n  -framework Foundation -framework Security \\\n  -install_name \"@executable_path/Frameworks/MacKeychainShim.dylib\" \\\n  \"${PROJECT_DIR}/Ksign/Backend/Mac/KeychainShim/MacKeychainShim.m\" \\\n  -o \"${RES_DIR}/MacKeychainShim.dylib\"\ncodesign --force --sign - --timestamp=none \"${RES_DIR}/MacKeychainShim.dylib\"\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		3379C1B52DA869A1004372DA /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AABA5D152DB3C87800BFCD2C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		AABA5D1E2DB3C87800BFCD2C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 3379C1B82DA869A1004372DA /* ArcSign */;
+			targetProxy = AABA5D1D2DB3C87800BFCD2C /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		3379C1CB2DA869A3004372DA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = arm64;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		3379C1CC2DA869A3004372DA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = arm64;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = "";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+			};
+			name = Release;
+		};
+		3379C1CE2DA869A3004372DA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_CXX_LANGUAGE_STANDARD = "compiler-default";
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = "";
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_INJECT_BASE_ENTITLEMENTS = YES;
+				CODE_SIGN_STYLE = Manual;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_APP_SANDBOX = NO;
+				ENABLE_HARDENED_RUNTIME = NO;
+				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"SERVER=1",
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GENERATE_INFOPLIST_FILE = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Ksign/Utilities/MachO",
+				);
+				INFOPLIST_KEY_CFBundleDisplayName = ArcSign;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.developer-tools";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "ArcSign (Forked from Nyasami/Ksign & Feather)";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MARKETING_VERSION = 1.0.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.arcsign.mac;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SDKROOT = macosx;
+				SUPPORTED_PLATFORMS = macosx;
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG SERVER $(inherited)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "Ksign/Supporting Files/Feather-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		3379C1CF2DA869A3004372DA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_CXX_LANGUAGE_STANDARD = "compiler-default";
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = "";
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_INJECT_BASE_ENTITLEMENTS = YES;
+				CODE_SIGN_STYLE = Manual;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_APP_SANDBOX = NO;
+				ENABLE_HARDENED_RUNTIME = NO;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				GCC_PREPROCESSOR_DEFINITIONS = "SERVER=1";
+				GENERATE_INFOPLIST_FILE = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Ksign/Utilities/MachO",
+				);
+				INFOPLIST_KEY_CFBundleDisplayName = ArcSign;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.developer-tools";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "ArcSign (Forked from Nyasami/Ksign & Feather)";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MARKETING_VERSION = 1.0.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.arcsign.mac;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SDKROOT = macosx;
+				SUPPORTED_PLATFORMS = macosx;
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = SERVER;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "Ksign/Supporting Files/Feather-Bridging-Header.h";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		AABA5D202DB3C87800BFCD2C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_ENTITLEMENTS = "";
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_INJECT_BASE_ENTITLEMENTS = YES;
+				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.arcsign.mac.tests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SDKROOT = macosx;
+				SUPPORTED_PLATFORMS = macosx;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ArcSign.app/Contents/MacOS/ArcSign";
+			};
+			name = Debug;
+		};
+		AABA5D212DB3C87800BFCD2C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_ENTITLEMENTS = "";
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_INJECT_BASE_ENTITLEMENTS = YES;
+				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.arcsign.mac.tests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SDKROOT = macosx;
+				SUPPORTED_PLATFORMS = macosx;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ArcSign.app/Contents/MacOS/ArcSign";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		3379C1B42DA869A1004372DA /* Build configuration list for PBXProject "ArcSign" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3379C1CB2DA869A3004372DA /* Debug */,
+				3379C1CC2DA869A3004372DA /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		3379C1CD2DA869A3004372DA /* Build configuration list for PBXNativeTarget "ArcSign" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3379C1CE2DA869A3004372DA /* Debug */,
+				3379C1CF2DA869A3004372DA /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		AABA5D1F2DB3C87800BFCD2C /* Build configuration list for PBXNativeTarget "ArcSignTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AABA5D202DB3C87800BFCD2C /* Debug */,
+				AABA5D212DB3C87800BFCD2C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		330F68FF2DC03DF400D8C35D /* XCLocalSwiftPackageReference "NimbleKit" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = NimbleKit;
+		};
+		33693A062DC8BF5B00730215 /* XCLocalSwiftPackageReference "AltSourceKit" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = AltSourceKit;
+		};
+		C40422132E119AF900D1F324 /* XCLocalSwiftPackageReference "Zsign" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = Zsign;
+		};
+		C42CC1AB2F4370F20064A4A2 /* XCLocalSwiftPackageReference "IDeviceKit" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = IDeviceKit;
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		3346F8372DC6C68300C7D508 /* XCRemoteSwiftPackageReference "Nuke" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/kean/Nuke";
+			requirement = {
+				kind = exactVersion;
+				version = 12.8.0;
+			};
+		};
+		3371F6F52DA9EBA500281AC6 /* XCRemoteSwiftPackageReference "Zip" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/marmelroy/Zip";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.1.2;
+			};
+		};
+		33CF13372DB5ACFB0021D4C5 /* XCRemoteSwiftPackageReference "SWCompression" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/tsolomko/SWCompression";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 4.8.6;
+			};
+		};
+		C45128062E54E8E900E94CC7 /* XCRemoteSwiftPackageReference "ZIPFoundation" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/weichsel/ZIPFoundation";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.9.19;
+			};
+		};
+		C4CEAE0A2DDF416B007EF880 /* XCRemoteSwiftPackageReference "ArArchiveKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/LebJe/ArArchiveKit";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.3.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		330F69002DC03DF500D8C35D /* NimbleExtensions */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 330F68FF2DC03DF400D8C35D /* XCLocalSwiftPackageReference "NimbleKit" */;
+			productName = NimbleExtensions;
+		};
+		330F69022DC03DF500D8C35D /* NimbleViews */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 330F68FF2DC03DF400D8C35D /* XCLocalSwiftPackageReference "NimbleKit" */;
+			productName = NimbleViews;
+		};
+		3346F5C12DC329A200C7D508 /* ZsignSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C40422132E119AF900D1F324 /* XCLocalSwiftPackageReference "Zsign" */;
+			productName = ZsignSwift;
+		};
+		3346F83A2DC6C6D100C7D508 /* NukeUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3346F8372DC6C68300C7D508 /* XCRemoteSwiftPackageReference "Nuke" */;
+			productName = NukeUI;
+		};
+		3346F8482DC6D64800C7D508 /* NimbleJSON */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 330F68FF2DC03DF400D8C35D /* XCLocalSwiftPackageReference "NimbleKit" */;
+			productName = NimbleJSON;
+		};
+		33693A072DC8BF5B00730215 /* AltSourceKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 33693A062DC8BF5B00730215 /* XCLocalSwiftPackageReference "AltSourceKit" */;
+			productName = AltSourceKit;
+		};
+		3371F7312DA9ECDD00281AC6 /* Zip */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3371F6F52DA9EBA500281AC6 /* XCRemoteSwiftPackageReference "Zip" */;
+			productName = Zip;
+		};
+		33CF13382DB5ACFB0021D4C5 /* SWCompression */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 33CF13372DB5ACFB0021D4C5 /* XCRemoteSwiftPackageReference "SWCompression" */;
+			productName = SWCompression;
+		};
+		C42CC1AE2F4370F20064A4A2 /* IDeviceSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C42CC1AB2F4370F20064A4A2 /* XCLocalSwiftPackageReference "IDeviceKit" */;
+			productName = IDeviceSwift;
+		};
+		C451296B2E54F0DB00E94CC7 /* ZIPFoundation */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C45128062E54E8E900E94CC7 /* XCRemoteSwiftPackageReference "ZIPFoundation" */;
+			productName = ZIPFoundation;
+		};
+		C4CEAE0B2DDF4735007EF880 /* ArArchiveKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C4CEAE0A2DDF416B007EF880 /* XCRemoteSwiftPackageReference "ArArchiveKit" */;
+			productName = ArArchiveKit;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = 3379C1B12DA869A1004372DA /* Project object */;
+}
